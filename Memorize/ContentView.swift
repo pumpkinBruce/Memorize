@@ -8,6 +8,50 @@
 import SwiftUI
 
 /*
+常用视图:
+
+1.基础视图:
+Text 显示文字
+Image 显示图片
+Label 结合图标和文字
+
+2.交互控件
+
+Button 按钮 (触发动作)
+Toggle 开关 (绑定布尔值)
+TextField 文本输入框
+Slider 滑动条(绑定数值)
+
+3.绘图与形状
+
+Rectangle/Circle/RoundedRectangle   绘制基础形状(矩形/圆/圆角矩形)
+
+4.列表
+
+Lisi 列表
+scrollView 包裹内容实现滚动
+ForEach 根据集合动态生成视图
+
+
+5.布局容器  (用于管理子视图的排列方式)
+VStack 垂直堆叠子视图
+HStack 水平堆叠子视图
+ZStack 面向用户,层叠子视图(后添加的在上层)
+lazyVStack/lazyHStack   惰性加载堆叠容器,仅渲染可见区域的子视图.
+spacer 占据剩余空间,用于撑开布局.
+Divider 添加一条分割线.
+...
+
+当视图需要组合多个子视图时,SwiftUI 使用 @ViewBuilder 简化代码.
+比如:
+        VStack{
+            Text("line1")
+            Text("line2")
+            Image(systemName: "globe")
+        }
+这里的{...} 时 @ViewBuilder 闭包,他会将多个子视图组成一个视图层级.
+
+
  View Builder 视图构建器
  
     ViewBuilder 是一个 SwiftUI 的属性包装器，用于将多个 View 组合成一个View。
@@ -24,19 +68,6 @@ import SwiftUI
  ❌ 使用 for 循环（必须用 ForEach 代替）。
  ❌ 使用 return 关键字（隐式返回）。
  ❌ 进行赋值语句（如 var sum = 0）。
- 
- 常见ViewBuilder
- 
- VStack 垂直堆叠             将多个视图垂直排列（从上到下）。
- HStack（水平堆叠）           将多个视图水平排列（从左到右）。
- ZStack（层叠视图）           将多个视图重叠在一起，后面的视图会覆盖前面的视图。
- List（列表视图）             用于创建可滚动列表，适用于展示大量数据。
- Section（用于 List 的分组）   在 List 里添加分区标题。
- LazyVStack & LazyHStack（惰性加载）  适用于大量数据的情况，仅在需要时加载视图，提高性能。
- ForEach（循环生成视图）        用于动态创建多个视图，通常与 List 或 ScrollView 搭配使用。
- Group（分组但不影响布局）        将多个视图归为一组，但不会影响视图的布局。
- ScrollView（滚动视图）       使视图可滚动，支持水平或垂直方向。
-
  
  */
 
