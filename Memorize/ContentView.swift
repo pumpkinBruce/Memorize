@@ -10,47 +10,66 @@ import SwiftUI
 
 
 /*
- 1.ContentView:
-    因为swift不知道项目是什么,所以swift给了一个默认的项目名 "ContentView",表示这是一个内容视图的结构体
-
- 2. : View
-    函数式编程,表示这个contentView的行为表现的像一个试图
-    “表现” 意味着 行为 和 功能
-    我们专注于功能和行为,而不是数据
+    Vesion 3.0
+    新增 增删卡片按钮
  */
 
 struct ContentView: View {
+    let emojis = ["👻","🎃","🤖","🐼","🐰","🐭","🦊","🐯","🐻","🌸","🐷"]
+    @State var cardCount :  Int = 4
     var body: some View {
+        //使用数组存储
+        
         VStack{
             HStack{
                 Text("Memorize")
                 Text("得分:")
                 
             }
-            .font(.largeTitle).padding(.horizontal).foregroundColor(.black)
+            .font(.largeTitle)
+            .padding(.horizontal)
+            .foregroundColor(.black)
            
+            HStack{
+                //.indices 获取数组的索引范围
+                ForEach(0..<cardCount,id:\.self) { index in
+                    cardView(isFaceUp: true, content: emojis[index])
+                }
+            }
+            
+            .foregroundColor(.orange)
             
             HStack{
-                cardView(isFaceUp: true, textValue: "🐷")
-                cardView(isFaceUp: true, textValue: "🦅")
-                cardView(isFaceUp: true, textValue: "🤖")
+                
+                
+                Button(action: {
+                    if cardCount > 1 {
+                        cardCount -= 1
+                    }
+                }, label: {
+                    Image(systemName: "rectangle.stack.badge.minus.fill")
+                })
+                //间隔器
+                Spacer()
+                Button(action: {
+                    if cardCount < emojis.count {
+                        cardCount += 1
+                    }
+                }, label: {
+                    Image(systemName: "rectangle.stack.badge.plus.fill")
+                })
+
+                
+               
+                
                 
             }
-            HStack{
-                cardView(isFaceUp: true, textValue: "🐼")
-                cardView(isFaceUp: true, textValue: "🐷")
-                cardView(isFaceUp: true, textValue: "🐻")
-                
-            }
-            HStack{
-                cardView(isFaceUp: true, textValue: "🦅")
-                cardView(isFaceUp: true, textValue: "🤖")
-                cardView(isFaceUp: true, textValue: "🐻")
-                
-            }
+            .font(.title)
+            .imageScale(.large)
+            .foregroundColor(.blue)
         }
         .padding(.all)
-        .foregroundColor(.orange)
+        
 
     }
 }
@@ -59,7 +78,7 @@ struct ContentView: View {
 //卡片视图
 struct cardView : View {
     @State var isFaceUp : Bool
-    var textValue : String
+    let content : String
     
     
     var body : some View{
@@ -76,7 +95,7 @@ struct cardView : View {
 //                    .stroke(lineWidth: 10)
                     .strokeBorder(lineWidth:9)
     //                .strokeBorder(style:StrokeStyle(lineWidth:9,dash: [10,1]))x
-                Text(textValue).font(.largeTitle)
+                Text(content).font(.largeTitle)
             }else{
                 base.fill()
             
