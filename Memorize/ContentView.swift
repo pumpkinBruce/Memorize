@@ -10,14 +10,9 @@ import SwiftUI
 
 
 /*
-    Vesion 3.1
-    1.(line29)将视图代码语逻辑代码分离.增加可读性.
-    2.(line 71)使用一个通用函数 cardCountAdjuster,封装按钮的逻辑。
-    3.(line77)cardCountAdjuster 中,为了保证增加/移除卡片的合法性(可能超出emojis 数组范围),使用 .disabled 修饰器 在超出范围是禁用按钮.
-    4.(line38)HStack 是 单行水平排列，当卡片数量过多时，会超出屏幕宽度，导致卡片被压缩成细长条，影响 UI 体验。
-    使用 LazyVGrid 视图,懒加载的垂直网格容器.
-    LazyVGrid 支持多行排列，会在每行放入合适数量的卡片，不会出现卡片挤压变形的情况。
-    在 LazyVGrid 中定义每行多少个元素时使用 adaptive() 修饰器,可以根据屏幕自适应布局.
+    Vesion 3.2
+    1.(line29)使用.opacity() 修饰器,控制卡片 正反面的透明度实现正反的翻转
+    2.(126)使用 ScrollView 布局视图,实现多卡片时滚动效果
  */
 
 struct ContentView: View {
@@ -27,7 +22,13 @@ struct ContentView: View {
     var body: some View {
         //将视图代码的具体逻辑拆分为后面的 cards, cardRemover, cardAdder 变量
         VStack{
-            cards
+            /*
+             保证卡片宽:高 为 2 : 3后,添加卡片会导致增删 卡片的按钮被挤出屏幕.
+             使用ScrollView 滚动视图.
+             */
+            ScrollView{
+                cards
+            }
             Spacer()
             cardCountAdjusters
         }.padding(.all)
@@ -46,6 +47,10 @@ struct ContentView: View {
             //.indices 获取数组的索引范围
             ForEach(0..<cardCount,id:\.self) { index in
                 cardView(isFaceUp: true, content: emojis[index])
+                    .aspectRatio(2/3, contentMode: .fit)
+                /*
+                 上面这行代码是使得卡片的宽:长比例为 2 : 3 更符合现实中的卡片.
+                 */
             }
         }
         .foregroundColor(.orange)
@@ -104,24 +109,31 @@ struct cardView : View {
          自动将多个 View 组合成一个 View.(有点像是将多个积木按照规则处理为一个完整积木)
          ViewBuilder 只能列出视图、做条件判断和声明局部变量.它不允许 for 语句、赋值语句、return 关键字等
          */
-        
         ZStack{
+            /*
+             SwiftUI 视图尺寸默认是基于内容的，如果 isFaceUp == false，Text 被移除，SwiftUI 重新计算大小，导致卡片变小。
+             当所有卡片都面朝下，内容消失，导致 SwiftUI 重新计算适合的大小，缩小了卡片的尺寸。
+             */
             let base = RoundedRectangle(cornerRadius: 10)
-            if isFaceUp{
+//            if isFaceUp{
+//                base.foregroundColor(.white)
+//                base.strokeBorder(lineWidth:9)
+//                Text(content).font(.largeTitle)
+//            }else{
+//                base.fill()
+//            
+//            }
+            Group {
                 base.foregroundColor(.white)
-                base
-//                    .stroke(lineWidth: 10)
-                    .strokeBorder(lineWidth:9)
-    //                .strokeBorder(style:StrokeStyle(lineWidth:9,dash: [10,1]))x
+                base.strokeBorder(lineWidth:9)
                 Text(content).font(.largeTitle)
-            }else{
-                base.fill()
-            
             }
+            .opacity(isFaceUp ? 1 : 0)
+            base.fill().opacity(isFaceUp ? 0 : 1)
+            
             
         }.onTapGesture {  //点击手势修饰符
             print("卡片被点击")
-//            isFaceUp = !isFaceUp
             //swift中切换布尔值的方法:.toggle()
             isFaceUp.toggle()
         }
