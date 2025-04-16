@@ -63,3 +63,26 @@ VStack {
     ViewBuilder 可以将多个 View 包装成一个 View.
 
 需要一个返回 View 的函数
+
+
+
+
+# Lecture 7
+
+##shape
+
+
+
+##animation
+
+制作动画的方式有两种:
+    1.通过形状(shape)变化
+    2.viewModifier
+
+
+
+
+
+
+
+

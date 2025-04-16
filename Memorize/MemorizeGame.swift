@@ -17,7 +17,7 @@ struct MemorizeGame<CardContent> where CardContent : Equatable {
      numberOfPairsOfCards: 多少对卡片
      cardContentFactory: 一个创建卡片内容的函数
      */
-    init(numberOfPairsOfCards:Int, cardContentFactory : (Int) -> CardContent) {    //函数式编程,调用一个函数来生成卡片内容
+    init(numberOfPairsOfCards:Int, cardContentFactory : (Int) -> CardContent) { //函数式编程,调用一个函数来生成卡片内容
         cards = []
         //卡片对数至少为2对
         for pairsIndex in 0 ..< max(2,numberOfPairsOfCards) {
