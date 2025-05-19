@@ -8,13 +8,27 @@
 import SwiftUI
 
 
-struct Cardify: ViewModifier {
+struct Cardify: ViewModifier, Animatable {
     
-    let isFaceUp : Bool
-    
-    init( _ isFaceUp: Bool) {
-        self.isFaceUp = isFaceUp
+    init (isFaceUp: Bool){
+        rotation = isFaceUp ? 0 : 180
     }
+    
+    //小于90度,则是正面
+    var isFaceUp : Bool {
+        rotation < 90
+    }
+    
+    var rotation : Double
+    
+    //我们希望牌在翻过90度之后才能看到卡片内容(或者翻过90度才看不到卡片内容),使用 animatableData 来控制
+    var animatableData: Double {
+        get { rotation }
+        set { rotation = newValue }
+    }
+    
+    
+    
     
     func body(content: Content) -> some View {
         ZStack{
@@ -27,6 +41,7 @@ struct Cardify: ViewModifier {
             base.fill()
                 .opacity(isFaceUp ? 0 : 1)   // 仅当 isFaceUp 为 false 时可见
         }
+        .rotation3DEffect(.degrees(rotation), axis: (0,1,0))  //为卡片翻转制作翻转动画,这是属于cardify(制作卡片)的功能
     }
     
     
@@ -45,6 +60,6 @@ struct Cardify: ViewModifier {
 
 extension View {
     func cardify(isFaceUp: Bool) -> some View {
-        modifier(Cardify(isFaceUp)) //modifier 是 View 的实例属性
+        modifier(Cardify(isFaceUp: isFaceUp)) //modifier 是 View 的实例属性
     }
 }

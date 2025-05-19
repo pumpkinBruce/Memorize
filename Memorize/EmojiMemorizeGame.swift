@@ -14,10 +14,10 @@ class EmojiMemorizeGame : ObservableObject {
     typealias Card = MemorizeGame<String>.Card
     
     //静态属性是类级的全局变量,在实例属性初始化之前就已经初始化完成.实例属性 model 可以使用此静态属性 来初始化它自己
-    private static let emojis = ["👻","🎃","🤖","🐼","🐰","🐭","🦊","🐯","🐻","🌸","🐷","🦢","❤️","😎","👽","👾","🛵","🚘","🎸","🍗"]
+    private static let emojis = ["👻","🎃","🤖","🐼","🐰","🐭","🦊","🐯","🐻","🌸","🐷","🦢","❤️","😎","👽","👾","🛵","🚘","🎸","🍗"] 
     
     private static func createMomorizeGame() -> MemorizeGame<String>{
-        MemorizeGame(numberOfPairsOfCards: 10) { pairIndex in    //为了可读性,不会简化为 $0
+        MemorizeGame(numberOfPairsOfCards: 20) { pairIndex in    //为了可读性,不会简化为 $0
             if emojis.indices.contains(pairIndex) {
                 return emojis[pairIndex]
             }
@@ -39,6 +39,10 @@ class EmojiMemorizeGame : ObservableObject {
     //应用基本色,让 ViewModel 控制
     var color : Color  {
         .orange
+    }
+    
+    var score : Int {
+        model.score
     }
     
     

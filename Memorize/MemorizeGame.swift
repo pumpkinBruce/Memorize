@@ -3,7 +3,7 @@
 //  Memorize
 //
 //  Created by Bruce on 2025/4/4.
-//
+
 
 import Foundation
 
@@ -12,6 +12,9 @@ import Foundation
 struct MemorizeGame<CardContent> where CardContent : Equatable {
     
     private(set) var cards : Array<Card>
+    
+    //得分
+    private(set) var score = 0
     
     /*
      numberOfPairsOfCards: 多少对卡片
@@ -48,6 +51,14 @@ struct MemorizeGame<CardContent> where CardContent : Equatable {
                     if cards[potentialMathIndex].content == card.content{
                         cards[potentialMathIndex].isMatched = true
                         cards[choosenIndex].isMatched = true
+                        score += 2
+                    } else {
+                        if cards[choosenIndex].hasBeenSeen {
+                            score -= 1
+                        }
+                        if cards[potentialMathIndex].hasBeenSeen {
+                            score -= 1
+                        }
                     }
                     
                 }else{
@@ -99,7 +110,14 @@ struct MemorizeGame<CardContent> where CardContent : Equatable {
         
         var id: String
         
-        var isFaceUp = false    //默认朝下
+        var isFaceUp = false {   //默认朝下
+            didSet {
+                if oldValue && !isFaceUp {
+                    hasBeenSeen = true
+                }
+            }
+        }
+        var hasBeenSeen = false //被翻起过,默认 false
         var isMatched = false   //默认未匹配
         var content : CardContent
     }

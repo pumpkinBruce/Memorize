@@ -8,19 +8,17 @@
 import SwiftUI
 
 /*
-    Vesion 3.5
-    lecture
-    1.将 CardView 作为单独的一个 View 文件
-    2.使用 typealias(类型别名) 简化冗余的 MemorizeGame<String>.Card
-    3.使用常量代替“蓝色数字”,定义私有结构体常量(CardView)
-    4.定义一个shape: Pie 作为倒计时动画的 View
-    6.定义一个modifier: Cardify,将将一个 Pie和卡片内容 的视图包装为一个卡片.并实现翻转动画
-    7.cardify中,使用 .backgroud .overlay 优化生成卡片的代码
-    8.将cardify扩展成为View协议的一个修饰器
-    
+    Vesion 4
+    lecture 8
+    1.新增得分功能
+    2.3D翻转卡片
+    3.新增卡片内容匹配后旋转动画
+    4.在合适的位置使用隐式动画 .animation 来自定义单个View的动画或者关闭动画
  */
 
 struct EmojiMemoryGameView: View {
+    
+    typealias Card = MemorizeGame<String>.Card
     
     //ObservedObject: 观察ViewModel,如果这个东西表明有什么发生改变,就重新绘制
     @ObservedObject var viewModel : EmojiMemorizeGame
@@ -29,7 +27,7 @@ struct EmojiMemoryGameView: View {
     private let spacing : CGFloat = 4 //间距
     
     /*
-     在cards 属性上加了一个 "@ViewBuilder" 使得可以查看 cards 里面的内容,那可以加在这里吗?
+     在cards 属性上加了一个 "@ViewBuilder" 使得可以查看 cards 里面的内容,那可以加在body这里吗?
      apple 的开发者已经为我们完成了这项工作
      这里隐式的存在一个"@ViewBuilder"
      */
@@ -37,26 +35,52 @@ struct EmojiMemoryGameView: View {
         VStack{
             //当value 发生改变,执行动画.因此要求 value 遵循 Equatable 协议来保证可以判断是否相等
             cards
-            .animation(.default,value: viewModel.cards)
-            .foregroundColor(viewModel.color)
-            
-            Button("洗牌"){
-                viewModel.shuffle()
+                .foregroundColor(viewModel.color)
+            HStack{
+                score
+                Spacer()
+                shuffle
             }
         }
         .padding(.all)
     }
+
+
+
+    private var score : some View {
+        Text("得分\(viewModel.score)")
+            .font(.largeTitle)
+            .animation(nil) //我们希望得分不要有动画,使用隐式动画 .animation(.nil)修饰符,表示零动画
+    }
+    
+    private var shuffle : some View {
+        Button("洗牌"){
+            //显示动画
+            withAnimation {  //使用默认动画即可
+                viewModel.shuffle()
+            }
+        }
+    }
+
     
     private var cards : some View{
         AspectVGrid(viewModel.cards, aspectRatio : cardAspectRatio) { card in
             //我可能在传递的函数中执行 if-then,所以我应该在AspectVGrid 的构造函数中接受ViewBuilder.否则我需要加 return 才能传递.
             CardView(card)
                 .padding(spacing)
-                .onTapGesture { //通过点击修饰器来实现翻转卡片
-                    viewModel.choose(card)
+                .overlay{
+                    
+                }
+                .onTapGesture {
+                    //点击卡片,动画化所有发生的事情(包括得分)
+                    withAnimation{  //默认 easeInOut
+                        viewModel.choose(card)
+                    }
                 }
         }
     }
+    
+    
     
 }
 
